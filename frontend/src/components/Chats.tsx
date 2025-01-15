@@ -93,7 +93,7 @@ const Chats = ({
   return (
     <div
       ref={cardRef}
-      className="max-w-full flex flex-col gap-4 p-4 max-sm:p-2"
+      className="max-w-full mx-4 flex flex-col gap-4 p-4 max-sm:p-2"
     >
       {messages.map((message, index) => (
         <Card
