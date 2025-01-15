@@ -1,6 +1,6 @@
-const Agent = require("../models/agentModel");
+import Agent from "../models/agentModel.js";
 
-exports.createAgent = async (req, res) => {
+export const createAgent = async (req, res) => {
     try {
         const { title, task, userId, icon } = req.body;
 
@@ -18,7 +18,7 @@ exports.createAgent = async (req, res) => {
     }
 }
 
-exports.getAllAgents = async (req, res) => {
+export const getAllAgents = async (req, res) => {
     try {
         const agents = await Agent.find();
         res.status(200).json({ agents });
@@ -28,7 +28,7 @@ exports.getAllAgents = async (req, res) => {
     }
 }
 
-exports.getAgent = async (req, res) => {
+export const getAgent = async (req, res) => {
     try {
         const agent = await Agent.findById(req.params.id);
         if (!agent) {

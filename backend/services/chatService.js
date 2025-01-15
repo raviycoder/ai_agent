@@ -1,8 +1,7 @@
-const {HfInference} = require("@huggingface/inference");
-const axios = require("axios");
+import { HfInference } from "@huggingface/inference";
 
 
-exports.generateResponse = async (messages) => {
+export const generateResponse = async (messages) => {
     const hf_token = process.env.HUGGINGFACE_API_TOKEN; // Get token from environment
     const inference = new HfInference(hf_token);
     try {

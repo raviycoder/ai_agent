@@ -1,14 +1,15 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const authRoutes = require("./routes/authroutes");
-const chatRoutes = require("./routes/chatRoutes");
-const agentRoutes = require("./routes/agentRoutes");
-const http = require("http");
-const { Server } = require("socket.io");
-const socketService = require("./services/socketService");
-require("dotenv").config();
-const cors = require("cors");
+import express from "express";
+import mongoose from "mongoose";
+import authRoutes from "./routes/authRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
+import agentRoutes from "./routes/agentRoutes.js";
+import http from "http";
+import { Server } from "socket.io";
+import dotenv from "dotenv";
+import cors from "cors";
+import { createChat } from "./services/socketService.js";
 
+dotenv.config();
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
@@ -22,7 +23,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/agent', agentRoutes);
 
 // Attach Socket.IO
-socketService.createChat(io);
+createChat(io);
 
 // Connect to MongoDB and Start Server
 mongoose.connect(process.env.MONGO_URI, {

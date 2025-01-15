@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema({
   role: { type: String, enum: ["user", "agent", "assistant"], required: true },
@@ -17,4 +17,5 @@ const chatSchema = new mongoose.Schema({
     updatedAt: {type: Date, default: Date.now},
 });
 
-module.exports = mongoose.model("Chat", chatSchema);
+const Chat = mongoose.model("Chat", chatSchema);
+export default Chat;

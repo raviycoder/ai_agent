@@ -1,6 +1,6 @@
-const Chat = require("../models/chatModel");
+import Chat from "../models/chatModel.js";
 
-const socketService = (io) => {
+export const socketService = (io) => {
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
@@ -16,7 +16,7 @@ const socketService = (io) => {
   });
 };
 
-const createChat = (io) => {
+export const createChat = (io) => {
   io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
 
@@ -49,10 +49,4 @@ const createChat = (io) => {
       console.log(`User disconnected: ${socket.id}`);
     });
   });
-};
-
-
-module.exports = {
-  socketService,
-  createChat,
 };

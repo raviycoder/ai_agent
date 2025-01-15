@@ -52,7 +52,7 @@ const Page = () => {
 
   if (loading) {
     return (
-      <div className="w-full flex justify-center items-center flex-col h-screen px-4">
+      <div className="w-full relative flex justify-center items-center flex-col h-screen px-4 ">
         <div className="w-full flex justify-center items-center flex-col h-[28rem]">
           <p>Loading Chats...</p>
           <DotLoader width={50} height={50} />
@@ -79,44 +79,49 @@ const Page = () => {
   if (addMessages && data && addMessages.length > 0) {
     return (
       <AuthGuard>
-        <div className="w-full flex justify-center items-center">
-          <div className="w-full max-w-7xl flex flex-col mx-5 gap-y-4">
+        <div className="w-full relative flex justify-center items-center">
+          <div className="w-full sm:max-w-7xl flex flex-col h-screen mx-5 gap-y-4">
             <div className="self-end -mt-5">
               <Button onClick={handleNewChat} variant={"outline"}>
                 <Plus className="mr-1" />
                 New Chat
               </Button>
             </div>
-            {loading ? (
-              <div className="w-full flex justify-center items-center flex-col h-screen max-sm:mx-1">
-                <p>Loading Chats...</p>
-                <DotLoader width={50} height={50} />
-                <ChatInput
-                  text={text}
-                  setText={setText}
-                  scrollToBottom={scrollToBottom}
-                  setLoad={setLoad}
-                  chatData={data}
-                  setAddMessages={setAddMessages}
-                  refresh={refresh}
+            <div className="overflow-y-auto">
+              {" "}
+              {loading ? (
+                <div className="w-full flex justify-center items-center flex-col max-sm:mx-1">
+                  <p>Loading Chats...</p>
+                  <DotLoader width={50} height={50} />
+                  <ChatInput
+                    text={text}
+                    setText={setText}
+                    scrollToBottom={scrollToBottom}
+                    setLoad={setLoad}
+                    chatData={data}
+                    setAddMessages={setAddMessages}
+                    refresh={refresh}
+                  />
+                </div>
+              ) : (
+                <Chats
+                  cardRef={cardRef as RefObject<HTMLDivElement>}
+                  load={load}
+                  messages={addMessages}
                 />
-              </div>
-            ) : (
-              <Chats
-                cardRef={cardRef as RefObject<HTMLDivElement>}
-                load={load}
-                messages={addMessages}
+              )}
+            </div>
+            <div className="mb-3">
+              <ChatInput
+                text={text}
+                setText={setText}
+                scrollToBottom={scrollToBottom}
+                setLoad={setLoad}
+                chatData={data}
+                setAddMessages={setAddMessages}
+                refresh={refresh}
               />
-            )}
-            <ChatInput
-              text={text}
-              setText={setText}
-              scrollToBottom={scrollToBottom}
-              setLoad={setLoad}
-              chatData={data}
-              setAddMessages={setAddMessages}
-              refresh={refresh}
-            />
+            </div>
           </div>
         </div>
       </AuthGuard>
@@ -124,24 +129,25 @@ const Page = () => {
   } else {
     return (
       <AuthGuard>
-          <div className="w-full flex justify-center items-center">
-            <div className="w-full max-w-7xl flex flex-col mx-5 ">
-              <div className="w-full flex justify-center items-center flex-col h-[30rem]">
-                {" "}
-                <PromptCards
-                  onSelectPrompt={({
-                    text,
-                    agent,
-                  }: {
-                    text: string;
-                    agent: string;
-                  }) => {
-                    setText(text);
-                    console.log("agent", agent);
-                  }}
-                />
-              </div>
+        <div className="w-full relative flex justify-center items-stretch h-screen">
+          <div className="w-full max-w-7xl flex flex-col mx-5 h-screen items-stretch">
+            <div className="w-full flex justify-center items-center flex-col min-h-[30rem] overflow-y-auto">
+              {" "}
+              <PromptCards
+                onSelectPrompt={({
+                  text,
+                  agent,
+                }: {
+                  text: string;
+                  agent: string;
+                }) => {
+                  setText(text);
+                  console.log("agent", agent);
+                }}
+              />
+            </div>
 
+            <div className="">
               <ChatInput
                 text={text}
                 setText={setText}
@@ -152,6 +158,7 @@ const Page = () => {
               />
             </div>
           </div>
+        </div>
       </AuthGuard>
     );
   }

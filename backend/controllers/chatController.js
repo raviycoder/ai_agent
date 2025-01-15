@@ -1,7 +1,7 @@
-const chatService = require("../services/chatService");
-const Chat = require("../models/chatModel");
+import Chat from "../models/chatModel.js";
+import {generateResponse} from "../services/chatService.js";
 
-exports.generateResponse = async (req, res, next) => {
+export const getResponse = async (req, res, next) => {
   try {
     const { messages } = req.body;
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -12,14 +12,14 @@ exports.generateResponse = async (req, res, next) => {
       throw error;
     }
 
-    const response = await chatService.generateResponse(messages);
+    const response = await generateResponse(messages);
     res.status(200).json({ response });
   } catch (error) {
     next(error);
   }
 };
 
-exports.createChat = async (req, res) => {
+export const createChat = async (req, res) => {
   try {
     const { userId, sessionId, purpose, messages } = req.body;
 
@@ -39,7 +39,7 @@ exports.createChat = async (req, res) => {
   }
 };
 
-exports.updateChatMessages = async (req, res) => {
+export const updateChatMessages = async (req, res) => {
   try {
     const { chatId, messages } = req.body;
 
@@ -68,7 +68,7 @@ exports.updateChatMessages = async (req, res) => {
   }
 };
 
-exports.getAllChats = async (req, res) => {
+export const getAllChats = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.size) || 10;
@@ -90,7 +90,7 @@ exports.getAllChats = async (req, res) => {
 };
 
 
-exports.getChat = async (req, res) => {
+export const getChat = async (req, res) => {
   try {
     const chat = await Chat.find({sessionId: req.params.id});
     if (!chat) {

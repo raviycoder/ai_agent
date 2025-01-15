@@ -39,7 +39,7 @@ const ChatInput = ({
   const { generateResponse, addMessages } = useChats();
 
   const handleSendMessage = async () => {
-    if (!text) {
+    try{if (!text) {
       return toast({
         title: "Please enter a message",
         variant: "destructive",
@@ -126,6 +126,13 @@ const ChatInput = ({
           await refresh();
         }
       }
+    }} catch (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error sending message",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
     }
   };
 

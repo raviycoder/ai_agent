@@ -1,10 +1,8 @@
-const User = require("../models/userModel");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { generateToken, verifyToken } = require("../utils/jwtHelper");
-const { hashPassword, verifyPassword } = require("../utils/passwordHelper");
+import User from "../models/userModel.js";
+import { generateToken, verifyToken } from "../utils/jwtHelper.js";
+import {hashPassword, verifyPassword} from "../utils/passwordHelper.js";
 
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -29,7 +27,7 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -47,7 +45,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.getUser = async (req, res) => {
+export const getUser = async (req, res) => {
   try {
     const authToken = req.headers.authorization.split(" ")[1];
     const decodedToken = verifyToken(authToken);

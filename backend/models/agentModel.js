@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const agentSchema = new mongoose.Schema({
     title: {type: String, required: true},
@@ -7,4 +7,5 @@ const agentSchema = new mongoose.Schema({
     icon: {type: String, default: "🤖"},
 });
 
-module.exports = mongoose.model("Agent", agentSchema);
+const Agent = mongoose.model("Agent", agentSchema);
+export default Agent;

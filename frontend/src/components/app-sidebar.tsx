@@ -119,10 +119,9 @@ export function AppSidebar() {
   // const [sessionData, setSessionData] = useState<ChatSession[]>([]);
   const { messages, addMessage } = useChat();
   const { data, loading, error } = useFetchData(`/api/auth/user`);
-  const {
-    data: session,
-    loading: sessionsLoading,
-  } = useFetchData(`/api/chat/all?page=${page}&size=12`) as unknown as {
+  const { data: session, loading: sessionsLoading } = useFetchData(
+    `/api/chat/all?page=${page}&size=12`
+  ) as unknown as {
     data: {
       total: number;
       chats: ChatSession[];
@@ -133,18 +132,22 @@ export function AppSidebar() {
     error: Error | null;
   };
   const pathname = usePathname() ?? "";
+  console.log("session", session);
   useEffect(() => {
-    if (session) {
-      const newSessions = session.chats.filter(
+    if ((session !== undefined || null) && session) {
+      const newSessions = session.chats?.filter(
         (chat) => !messages.some((prev) => prev.sessionId === chat.sessionId)
       );
-      addMessage((preMessages) => [...preMessages, ...newSessions as unknown as Chats[]]);
+      addMessage((preMessages) => [
+        ...preMessages,
+        ...(newSessions as unknown as Chats[]),
+      ]);
       // setSessionData((prevSessions) => [...prevSessions, ...newSessions]);
       setHasMore(messages.length + newSessions.length < session.total);
 
       return () => {
         socket.disconnect();
-      }
+      };
     }
   }, [session]);
 

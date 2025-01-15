@@ -93,13 +93,13 @@ const Chats = ({
   return (
     <div
       ref={cardRef}
-      className="max-w-full h-[28rem] overflow-y-auto flex flex-col gap-4 p-4 max-sm:p-2"
+      className="max-w-full flex flex-col gap-4 p-4 max-sm:p-2"
     >
       {messages.map((message, index) => (
         <Card
           key={index}
           className={`border-none shadow-none relative ${
-            message.role === "user" ? "self-end" : "max-w-[40rem]"
+            message.role === "user" ? "self-end max-w-2xl" : "max-w-[80rem]"
           }`}
         >
           <CardContent

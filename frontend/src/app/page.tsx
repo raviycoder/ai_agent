@@ -26,7 +26,7 @@ export default function Home() {
   };
   return (
     <AuthGuard>
-      <div className="w-full flex justify-center items-center flex-col">
+      <div className="w-full flex justify-center items-center flex-col max-sm:px-5">
         <div className="w-full max-w-5xl flex flex-col mx-10 gap-y-4 text-center">
           <div className="flex justify-center items-center gap-x-4">
             <Logo className="h-14 w-14 -mt-2" />
@@ -38,7 +38,7 @@ export default function Home() {
             create and use them in your daily life workflow.
           </p>
         </div>
-        <div className="w-full flex justify-center items-center mt-10 max-w-5xl space-x-5">
+        <div className="w-full flex max-sm:flex-col justify-center items-center mt-10 max-w-5xl sm:space-x-5 max-sm:space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="inline-flex items-center">
