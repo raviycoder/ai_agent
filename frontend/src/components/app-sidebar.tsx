@@ -19,6 +19,8 @@ import DotLoader from "./icons/loader";
 import { Chats } from "@/utils/Types";
 import { useChat } from "@/context/ChatContext";
 import socket from "@/service/socketService";
+import Logo from "./icons/Logo";
+import Link from "next/link";
 
 interface ChatSession {
   userId: string;
@@ -169,7 +171,11 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader>
+      <SidebarHeader className="flex flex-col items-left">
+        <Link className="flex items-center mb-2 ml-4" href="/">
+          <Logo className="h-6 w-6" />{" "}
+          <span className="ml-2 font-bold">AI Agents</span>
+        </Link>
         <div className="p-4 border-b">
           <h2 className="text-xl font-semibold mb-4">Chat History</h2>
           <SearchBar setSearch={(search) => setSearch(search)} />

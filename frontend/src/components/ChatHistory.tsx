@@ -2,8 +2,6 @@
 import { SidebarGroup } from "@/components/ui/sidebar";
 import { MessageSquare } from "lucide-react";
 import { format } from "date-fns";
-import InfiniteScroll from "react-infinite-scroll-component";
-import DotLoader from "./icons/loader";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { useParams } from "next/navigation";
@@ -66,28 +64,17 @@ export function ChatHistory({
 
   return (
     <div className="w-full flex flex-col">
-      <InfiniteScroll
-        scrollableTarget="#scroll-area"
-        loader={
-          <div className="flex justify-center max-w-68">
-            <DotLoader />
-          </div>
-        }
-        dataLength={sessions.length}
-        next={loadMore}
-        hasMore={hasMore}
-        inverse={true}
-      >
-        {todaySessions.length > 0 && renderSessions(todaySessions, "Today")}
-        {olderSessions.length > 0 && renderSessions(olderSessions, "Previous")}
-      </InfiniteScroll>
+      {todaySessions.length > 0 && renderSessions(todaySessions, "Today")}
+      {olderSessions.length > 0 && renderSessions(olderSessions, "Previous")}
       {hasMore && (
         <Button
           variant="outline"
-          className="w-full max-w-56 ml-3"
+          className="mt-4 mx-4"
+          size="default"
           onClick={loadMore}
+          disabled={!hasMore}
         >
-          Load More
+          {hasMore ? "Load more" : "No more messages"}
         </Button>
       )}
     </div>

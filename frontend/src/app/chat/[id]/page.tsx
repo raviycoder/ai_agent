@@ -79,7 +79,7 @@ const Page = () => {
   if (addMessages && data && addMessages.length > 0) {
     return (
       <AuthGuard>
-        <div className="w-full max-w-fit relative flex justify-center items-center">
+        <div className="w-full relative flex justify-center items-center">
           <div className="w-full sm:max-w-7xl flex flex-col h-screen mx-5 gap-y-4">
             <div className="self-end -mt-5">
               <Button onClick={handleNewChat} variant={"outline"}>
@@ -87,7 +87,7 @@ const Page = () => {
                 New Chat
               </Button>
             </div>
-            <div className="overflow-y-auto min-h-[28rem]">
+            <div className="overflow-y-auto min-h-[28rem] w-full">
               {" "}
               {loading ? (
                 <div className="w-full flex justify-center items-center flex-col max-sm:mx-1">

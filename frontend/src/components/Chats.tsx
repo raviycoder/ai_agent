@@ -107,7 +107,7 @@ const Chats = ({
               message.role === "user" ? "flex-row-reverse" : "flex-row"
             } items-start gap-4`}
           >
-            <div className="flex items-center justify-center w-10 h-10 bg-gray-200 text-black border border-gray-600 rounded-full">
+            <div className="flex items-center justify-center min-w-10 h-10 bg-gray-200 text-black border border-gray-600 rounded-full">
               {message.role === "user" ? (
                 <User className="text-xl" />
               ) : (
