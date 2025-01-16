@@ -50,7 +50,7 @@ export const updateChatMessages = async (req, res) => {
         .json({ message: "Please provide all required fields" });
     }
 
-    const chat = await Chat.findByIdAndUpdate({ chatId, userId });
+    const chat = await Chat.findOne({ _id: chatId, userId });
     if (!chat) {
       return res.status(404).json({ message: "Chat not found" });
     }
