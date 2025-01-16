@@ -21,6 +21,7 @@ import { useChat } from "@/context/ChatContext";
 import socket from "@/service/socketService";
 import Logo from "./icons/Logo";
 import Link from "next/link";
+import { MessageSquareWarning } from "lucide-react";
 
 interface ChatSession {
   userId: string;
@@ -134,7 +135,6 @@ export function AppSidebar() {
     error: Error | null;
   };
   const pathname = usePathname() ?? "";
-  console.log("session", session);
   useEffect(() => {
     if ((session !== undefined || null) && session) {
       const newSessions = session.chats?.filter(
@@ -190,9 +190,18 @@ export function AppSidebar() {
               sessions={filteredSessions as unknown as ChatSession[]}
               onSessionClick={() => {}}
             />
-          ) : (
+          ) : sessionsLoading ? (
             <div className="flex items-center justify-center h-full">
               <DotLoader />
+            </div>
+          ) : messages.length === 0 && (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground flex flex-col items-center">
+                  <MessageSquareWarning className="h-16 w-16 text-gray-500" />
+                  No chat history found.
+                </p>
+              </div>
             </div>
           )}
         </ScrollArea>

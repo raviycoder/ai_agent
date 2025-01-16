@@ -13,6 +13,12 @@ import { toast } from "@/hooks/use-toast";
 import { useParams } from "next/navigation";
 import { useChat } from "@/context/ChatContext";
 import socket from "@/service/socketService";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 const ChatInput = ({
   refresh,
   setAddMessages,
@@ -31,84 +37,91 @@ const ChatInput = ({
   setText: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [focused, setFocused] = useState(false);
+  const [isEnter, setIsEnter] = useState(false);
   const { id } = useParams();
   const { addMessage } = useChat();
   const [agents, setAgents] = useState<AgentType[]>([]);
+  const { data: user } = useFetchData("/api/auth/user") as unknown as {
+    data: { user: { _id: string } };
+  };
   const { data, loading, error } = useFetchData("/api/agent/all");
   const [selectedAgent, setSelectedAgent] = useState<AgentType | null>(null);
   const { generateResponse, addMessages } = useChats();
-
   const handleSendMessage = async () => {
-    try{if (!text) {
-      return toast({
+    if (!text) {
+      toast({
         title: "Please enter a message",
         variant: "destructive",
       });
+      return setIsEnter(false);
     }
 
     if (!selectedAgent) {
-      return toast({
+      toast({
         title: "Please select an agent",
         variant: "destructive",
       });
+      return setIsEnter(false);
     }
+    try {
+      const userChat = { role: "user", content: text };
 
-    const userChat = { role: "user", content: text };
+      if (chatData && chatData.chatData?._id) {
+        // Add user message to local state
+        setAddMessages((prevMessages) => [...prevMessages, userChat]);
 
-    if ( chatData && chatData.chatData?._id) {
-      // Add user message to local state
-      setAddMessages((prevMessages) => [...prevMessages, userChat]);
+        // Save user message to the server
+        await addMessages({
+          chatId: chatData.chatData._id,
+          messages: userChat,
+        });
 
-      // Save user message to the server
-      await addMessages({
-        chatId: chatData.chatData._id,
-        messages: userChat,
-      });
+        // Prepare the full text for generating a response
+        const fullText = selectedAgent
+          ? `${selectedAgent.task}\n${text}`
+          : text;
 
-      // Prepare the full text for generating a response
-      const fullText = selectedAgent ? `${selectedAgent.task}\n${text}` : text;
+        setText(""); // Clear input
+        setLoad(true); // Show loading indicator
+        scrollToBottom(); // Scroll to the bottom
 
-      setText(""); // Clear input
-      setLoad(true); // Show loading indicator
-      scrollToBottom(); // Scroll to the bottom
+        // Generate response from server
+        const data = await generateResponse([
+          { role: "user", content: fullText },
+        ]);
 
-      // Generate response from server
-      const data = await generateResponse([
-        { role: "user", content: fullText },
-      ]);
-
-      if (data && chatData.chatData._id) {
-        // Add response to local state
-        setAddMessages((prevMessages) => [...prevMessages, data.response]);
-        setLoad(false); // Hide loading indicator
-
-        // Save response to the server with agent details
-        if (selectedAgent) {
-          await addMessages({
-            chatId: chatData.chatData._id,
-            messages: {
-              ...data.response,
-              agentId: selectedAgent?._id || "None",
-              icon: selectedAgent?.icon || "",
-            },
-          });
-        }
-        scrollToBottom(); // Ensure scroll is at the bottom
-      }
-    } else {
-      setAddMessages((prevMessages) => [...prevMessages, userChat]);
-      setText("");
-      // Handle new chat creation
-      if (selectedAgent && id) {
-        setLoad(true);
-        const data = await generateResponse([userChat]);
-
-        if (data?.response) {
+        if (data && chatData.chatData._id) {
+          // Add response to local state
           setAddMessages((prevMessages) => [...prevMessages, data.response]);
-          setLoad(false);
-          // Save response to the server
-          socket.emit("joinSession", {
-              userId: selectedAgent.userId,
+          setLoad(false); // Hide loading indicator
+
+          // Save response to the server with agent details
+          if (selectedAgent) {
+            await addMessages({
+              chatId: chatData.chatData._id,
+              messages: {
+                ...data.response,
+                agentId: selectedAgent?._id || "None",
+                icon: selectedAgent?.icon || "",
+              },
+            });
+          }
+          scrollToBottom(); // Ensure scroll is at the bottom
+        }
+      } else {
+        setAddMessages((prevMessages) => [...prevMessages, userChat]);
+        setText("");
+        // Handle new chat creation
+        if (selectedAgent && id) {
+          setLoad(true);
+          const data = await generateResponse([userChat]);
+
+          if (data?.response && user) {
+            setAddMessages((prevMessages) => [...prevMessages, data.response]);
+            setLoad(false);
+            // Save response to the server
+            socket.emit("joinSession", {
+              userId: user.user._id,
               sessionId: id.toString(),
               purpose: text,
               messages: [
@@ -119,20 +132,27 @@ const ChatInput = ({
                   icon: selectedAgent.icon,
                 },
               ],
-          });
-          await socket.on("sessionJoined", (data) => {
-            addMessage((preMessages) => [...preMessages, data as unknown as Chats]);
-          });
-          await refresh();
+            });
+            await socket.on("sessionJoined", (data) => {
+              addMessage((preMessages) => [
+                data as unknown as Chats,
+                ...preMessages,
+              ]);
+            });
+            await refresh();
+          }
         }
       }
-    }} catch (error) {
+    } catch (error) {
       console.error("Error sending message:", error);
       toast({
         title: "Error sending message",
         description: "Please try again later.",
         variant: "destructive",
       });
+      setLoad(false);
+    } finally {
+      setIsEnter(false);
     }
   };
 
@@ -163,10 +183,15 @@ const ChatInput = ({
             onBlur={() => setFocused(false)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
+                setIsEnter(true);
                 e.preventDefault();
                 handleSendMessage();
+              } else if (e.key === "Enter" && e.shiftKey) {
+                e.preventDefault();
+                setText((prevText) => prevText + "\n");
               }
             }}
+            disabled={isEnter}
             value={text}
             onChange={(e) => {
               setText(e.target.value);
@@ -175,9 +200,26 @@ const ChatInput = ({
             className="resize-none focus-visible:ring-0 border-none w-full"
             placeholder="Type a message..."
           />
-          <Button onClick={handleSendMessage} size="icon" variant="outline">
-            <SendHorizontal />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  disabled={isEnter}
+                  onClick={() => {
+                    setIsEnter(true);
+                    handleSendMessage();
+                  }}
+                  size="icon"
+                  variant="outline"
+                >
+                  <SendHorizontal />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Send Message</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </CardContent>
     </Card>

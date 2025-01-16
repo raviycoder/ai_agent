@@ -66,7 +66,6 @@ export function CreateAgent({onAgentCreate}:{onAgentCreate: (agents: Agent) => v
     if (!loading && !error) {
       if (!user) return null;
       const {_id} = (user as { user: string; })?.user as unknown as { _id: string };
-      console.log("creaeted", _id);
       if (values.icon === "") {
         const data = {
           title: values.title,
@@ -81,7 +80,7 @@ export function CreateAgent({onAgentCreate}:{onAgentCreate: (agents: Agent) => v
           icon: values.icon,
           userId: _id,
         };
-        createAgent(data).then((agent) => {console.log('agent', agent) 
+        createAgent(data).then((agent) => {
           onAgentCreate(agent.agent)});
       }
       toast({

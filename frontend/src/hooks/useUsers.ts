@@ -7,7 +7,7 @@ interface User {
 
 const useUsers = () => {
 
-    const startUrl = "https://ai-agent-backend-zpr6.onrender.com/api/auth";
+    const startUrl = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth`;
     const createUser = async (user: User) => {
         try {
             const response = await axios.post(`${startUrl}/register`, user);

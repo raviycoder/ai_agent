@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://ai-agent-backend-zpr6.onrender.com", // Replace with your backend URL
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL, // Replace with your backend URL
 });
 
 api.interceptors.request.use(

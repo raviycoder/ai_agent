@@ -2,17 +2,19 @@ const DotLoader = ({
   className,
   width = 24,
   height = 24,
+  fill = "#4B4B4BFF",
 }: {
   className?: string;
   width?: number;
   height?: number;
+  fill?: string;
 }) => {
   return (
     <svg
       className={className}
       width={width}
       height={height}
-      fill="#4B4B4BFF"
+      fill={fill}
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
     >

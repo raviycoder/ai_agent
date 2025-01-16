@@ -277,8 +277,6 @@ const SidebarTrigger = React.forwardRef<
 >(({ className, onClick, ...props }, ref) => {
   const { toggleSidebar } = useSidebar()
   const pathname = usePathname();
-  console.log(pathname);
-
   const Urls = ['/auth/login', '/auth/sign-up']
   const isLogin = Urls.includes(pathname);
 

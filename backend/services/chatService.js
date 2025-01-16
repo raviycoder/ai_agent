@@ -12,7 +12,6 @@ export const generateResponse = async (messages) => {
             max_tokens: 2048,
             top_p: 0.7        
         });
-        console.log("Response:", response);
         
         return response.choices[0].message;
     } catch (error) {

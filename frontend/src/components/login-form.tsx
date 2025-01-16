@@ -20,6 +20,7 @@ import {
 import useUsers from "@/hooks/useUsers";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import DotLoader from "./icons/loader";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -51,7 +52,6 @@ export function LoginForm({
       });
       router.push("/");
     }).catch((error) => {
-      console.log(error);
       toast({
         title: "Login failed",
         description: `${error.response.data.message}`,
@@ -135,8 +135,14 @@ export function LoginForm({
               )}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Login
+          <Button disabled={form.formState.isSubmitting} type="submit" className="w-full">
+          {form.formState.isSubmitting ? (
+              <>
+                <DotLoader className="h-4 w-4" fill="#fff" /> <span className="ms-2">Login</span>
+              </>
+            ) : (
+              "Login"
+            )}
           </Button>
         </div>
         <div className="text-center text-sm">

@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useParams, useRouter } from "next/navigation";
 import { memo, RefObject, useEffect, useRef, useState } from "react";
 import PromptCards from "@/components/PromptCard";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface ChatData {
   chatData: {
@@ -52,8 +53,8 @@ const Page = () => {
 
   if (loading) {
     return (
-      <div className="w-full relative flex justify-center items-center flex-col h-screen px-4 ">
-        <div className="w-full flex justify-center items-center flex-col h-[28rem]">
+      <div className="w-full relative flex justify-evenly items-center flex-col h-[95vh] px-4 ">
+        <div className="w-full flex justify-center items-center flex-col h-[60vh]">
           <p>Loading Chats...</p>
           <DotLoader width={50} height={50} />
         </div>
@@ -72,15 +73,18 @@ const Page = () => {
   if (error) {
     return (
       <div className="w-full flex justify-center items-center">
-        <p>Error loading chat data.</p>
+        <Alert variant="destructive">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error.message}</AlertDescription>
+        </Alert>
       </div>
     );
   }
   if (addMessages && data && addMessages.length > 0) {
     return (
       <AuthGuard>
-        <div className="w-full relative flex justify-center items-center">
-          <div className="w-full sm:max-w-7xl flex flex-col h-screen mx-5 gap-y-4">
+        <div className="w-full relative flex justify-center items-center h-[95vh] ">
+          <div className="w-full sm:max-w-7xl flex flex-col h-full mx-5 gap-y-4 justify-evenly">
             <div className="self-end -mt-5">
               <Button onClick={handleNewChat} variant={"outline"}>
                 <Plus className="mr-1" />
@@ -129,25 +133,17 @@ const Page = () => {
   } else {
     return (
       <AuthGuard>
-        <div className="w-full relative flex justify-center items-stretch h-screen">
-          <div className="w-full max-w-7xl flex flex-col mx-5 h-screen items-stretch">
-            <div className="w-full flex justify-center items-center flex-col min-h-[30rem] overflow-y-auto">
+        <div className="w-full relative flex justify-center items-stretch h-[95vh]">
+          <div className="w-full max-w-7xl flex flex-col mx-5 h-full items-stretch justify-evenly">
+            <div className="w-full flex flex-grow justify-around items-center flex-col overflow-y-auto">
               {" "}
               <PromptCards
-                onSelectPrompt={({
-                  text,
-                  agent,
-                }: {
-                  text: string;
-                  agent: string;
-                }) => {
+                onSelectPrompt={({ text }: { text: string }) => {
                   setText(text);
-                  console.log("agent", agent);
                 }}
               />
             </div>
-
-            <div className="">
+            <div className="mb-2">
               <ChatInput
                 text={text}
                 setText={setText}

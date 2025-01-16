@@ -7,6 +7,19 @@
 
 This backend application provides a set of APIs for managing agents, chats, and users. It uses a MongoDB database for storing data and Node.js with Express.js as the server-side framework.
 
+### Teck Stack (Backend)
+
+* Node.js
+* Express.js
+* MongoDB
+* JWT
+* Bcrypt
+* Axios
+* Hugging Face Inference API
+* Socket.IO
+* Dotenv
+* CORS
+
 ### Features
 
 * **Agent Management**: Create, read, update, and delete (CRUD) agents
@@ -19,10 +32,11 @@ This backend application provides a set of APIs for managing agents, chats, and 
 
 To run the backend application locally, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-repo/backend.git`
-2. Install dependencies: `npm install`
-3. Start the application: `npm start`
-4. Access the application: `http://localhost:5000`
+1. Clone the repository: `git clone https://github.com/raviycoder/ai_agent.git`
+2. Navigate to the project directory: `cd ai_agent/backend/`
+3. Install dependencies: `npm install`
+4. Start the application: `npm start`
+5. Access the application: `http://localhost:5000`
 
 ### APIs
 
@@ -61,4 +75,14 @@ The following environment variables are required:
 
 * `MONGO_URI`: The MongoDB connection string
 * `JWT_SECRET`: The secret key for signing JWT tokens
-* `PORT`: The port number for the application to listen on
+* `HUGGINGFACE_API_TOKEN`: The Hugging Face Inference API token
+
+### Deployment
+
+Use render to deploy backend application
+
+
+---
+
+## 🌟 Contribution
+You’re welcome to contribute, reference, or enhance this project! If you find it helpful, don’t forget to **star** 🌟 the repository.

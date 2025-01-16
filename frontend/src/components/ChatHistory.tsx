@@ -27,7 +27,6 @@ export function ChatHistory({
   onSessionClick: (sessionId: string) => void;
 }) {
   const { id } = useParams();
-  console.log("sessions", id);
   const today = format(new Date(), "yyyy-MM-dd");
   const todaySessions = sessions.filter(
     (session) => format(new Date(session.updatedAt), "yyyy-MM-dd") === today

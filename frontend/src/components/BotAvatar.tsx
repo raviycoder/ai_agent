@@ -4,7 +4,7 @@ import { BotIcon } from "lucide-react";
 const BotAvatar = ({ icon }: { icon: string }) => {
 
   return (
-    <div className="flex items-center justify-center space-x-3 min-w-14 min-h-8">
+    <div className="flex items-center justify-center space-x-3 min-w-8 min-h-8">
       { icon && icon !== "" ? (
         <p>{ icon }</p>
       ) : (

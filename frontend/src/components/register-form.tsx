@@ -20,6 +20,7 @@ import {
 import useUsers from "@/hooks/useUsers";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import DotLoader from "./icons/loader";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -40,24 +41,26 @@ export function RegisterForm({
     },
   });
 
-  const {createUser} = useUsers();
+  const { createUser } = useUsers();
   const router = useRouter();
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    createUser({ email: values.email, password: values.password }).then(() => {
-      toast({
-        title: "User created successfully",
-        description: "You have successfully created a user.",
+    createUser({ email: values.email, password: values.password })
+      .then(() => {
+        toast({
+          title: "User created successfully",
+          description: "You have successfully created a user.",
+        });
+        router.push("/");
+      })
+      .catch((error) => {
+        toast({
+          title: "User creation failed",
+          description: `${error.response.data.message}`,
+          variant: "destructive",
+        });
       });
-      router.push("/");
-    }).catch((error) => {
-      toast({
-        title: "User creation failed",
-        description: `${error.response.data.message}`,
-        variant: "destructive",
-      });
-    });
   }
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -135,8 +138,18 @@ export function RegisterForm({
               )}
             />
           </div>
-          <Button type="submit" className="w-full">
-            Sign Up
+          <Button
+            disabled={form.formState.isSubmitting}
+            type="submit"
+            className="w-full"
+          >
+            {form.formState.isSubmitting ? (
+              <>
+                <DotLoader className="h-4 w-4" fill="#fff" /> <span className="ms-2">Creating account</span>
+              </>
+            ) : (
+              "Create account"
+            )}
           </Button>
         </div>
         <div className="text-center text-sm">

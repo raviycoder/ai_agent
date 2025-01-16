@@ -1,5 +1,5 @@
 import Chat from "../models/chatModel.js";
-import {generateResponse} from "../services/chatService.js";
+import { generateResponse } from "../services/chatService.js";
 
 export const getResponse = async (req, res, next) => {
   try {
@@ -42,6 +42,7 @@ export const createChat = async (req, res) => {
 export const updateChatMessages = async (req, res) => {
   try {
     const { chatId, messages } = req.body;
+    const userId = req.user.id;
 
     if (!chatId || !messages) {
       return res
@@ -49,8 +50,7 @@ export const updateChatMessages = async (req, res) => {
         .json({ message: "Please provide all required fields" });
     }
 
-
-    const chat = await Chat.findByIdAndUpdate(chatId);
+    const chat = await Chat.findByIdAndUpdate({ chatId, userId });
     if (!chat) {
       return res.status(404).json({ message: "Chat not found" });
     }
@@ -70,14 +70,15 @@ export const updateChatMessages = async (req, res) => {
 
 export const getAllChats = async (req, res) => {
   try {
+    const userId = req.user.id;
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.size) || 10;
 
     const skip = (page - 1) * pageSize;
-    const total = await Chat.countDocuments();
+    const total = await Chat.countDocuments({ userId });
 
     // Sort by createdAt in descending order
-    const chats = await Chat.find()
+    const chats = await Chat.find({ userId })
       .sort({ updatedAt: -1 })
       .skip(skip)
       .limit(pageSize);
@@ -89,14 +90,14 @@ export const getAllChats = async (req, res) => {
   }
 };
 
-
 export const getChat = async (req, res) => {
   try {
-    const chat = await Chat.find({sessionId: req.params.id});
+    const userId = req.user.id;
+    const chat = await Chat.find({ sessionId: req.params.id, userId });
     if (!chat) {
       return res.status(404).json({ message: "Chat not found" });
     }
-    const chatData = chat[0]
+    const chatData = chat[0];
     res.status(200).json({ chatData });
   } catch (error) {
     console.error(error);
